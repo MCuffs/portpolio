@@ -4,53 +4,12 @@ import { prisma } from '@/lib/prisma'
 import { notFound } from 'next/navigation'
 import Link from 'next/link'
 import { ArrowLeft } from 'lucide-react'
+import { fallbackProjects } from '@/lib/fallback-projects'
 
 export const revalidate = 3600
 
 export default async function ProjectDetailPage({ params }: { params: Promise<{ slug: string }> }) {
     const { slug } = await params
-
-    const fallbackProjects: Project[] = [
-        {
-            id: '1',
-            slug: 'market-expansion',
-            title: 'Market Expansion Strategy',
-            description: 'A comprehensive strategy for entering the SEA market, resulting in 20% YoY growth.',
-            tags: 'Strategy, Data, Growth',
-            content: '<h2>Overview</h2><p>Placeholder project content when database is empty.</p>',
-            thumbnail: null,
-            featured: true,
-            order: 1,
-            createdAt: new Date(),
-            updatedAt: new Date(),
-        },
-        {
-            id: '2',
-            slug: 'ai-customer-segmentation',
-            title: 'AI Customer Segmentation',
-            description: 'Using clustering algorithms to identify high-value customers and optimize marketing spend.',
-            tags: 'AI, Python, Marketing',
-            content: '<h2>Overview</h2><p>Placeholder project content when database is empty.</p>',
-            thumbnail: null,
-            featured: true,
-            order: 2,
-            createdAt: new Date(),
-            updatedAt: new Date(),
-        },
-        {
-            id: '3',
-            slug: 'saas-pricing-model',
-            title: 'SaaS Pricing Model Optimization',
-            description: 'Redesigning the pricing tier structure based on usage data and competitor analysis.',
-            tags: 'Product, Pricing, SaaS',
-            content: '<h2>Overview</h2><p>Placeholder project content when database is empty.</p>',
-            thumbnail: null,
-            featured: false,
-            order: 3,
-            createdAt: new Date(),
-            updatedAt: new Date(),
-        },
-    ]
 
     let project: Project | null = fallbackProjects.find((p) => p.slug === slug) || null
     try {
