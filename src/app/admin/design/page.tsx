@@ -2,7 +2,12 @@ import { DesignForm } from '@/components/admin/DesignForm'
 import { prisma } from '@/lib/prisma'
 
 export default async function AdminDesignPage() {
-    const settings = await prisma.designSetting.findFirst()
+    let settings = null
+    try {
+        settings = await prisma.designSetting.findFirst()
+    } catch (e) {
+        console.error('Failed to fetch design settings:', e)
+    }
 
     return (
         <div className="p-8 space-y-6">

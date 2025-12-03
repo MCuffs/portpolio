@@ -9,7 +9,12 @@ import { prisma } from '@/lib/prisma'
 export const revalidate = 3600 // Revalidate every hour
 
 export default async function Home() {
-  const design = await prisma.designSetting.findFirst()
+  let design = null
+  try {
+    design = await prisma.designSetting.findFirst()
+  } catch (e) {
+    console.error('Failed to fetch design settings:', e)
+  }
 
   const heroBackgroundEnabled = Boolean(design?.heroBackgroundEnabled && (design.heroBackgroundImage || '/hero-bg.jpg'))
   const heroBackgroundImage = design?.heroBackgroundImage || '/hero-bg.jpg'
