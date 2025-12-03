@@ -9,6 +9,7 @@ import { BackgroundEditor } from '@/components/sections/BackgroundEditor'
 import { prisma } from '@/lib/prisma'
 
 export const revalidate = 3600 // Revalidate every hour
+export const dynamic = 'force-dynamic' // allow query params like ?edit=1 to toggle edit UI
 
 export default async function Home({ searchParams }: { searchParams?: { edit?: string } }) {
   const editMode = searchParams?.edit === '1'
