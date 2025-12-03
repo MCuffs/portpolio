@@ -1,10 +1,12 @@
+import type { Project } from '@prisma/client'
+
 import { ProjectGrid } from '@/components/sections/ProjectGrid'
 import { prisma } from '@/lib/prisma'
 
 export const revalidate = 3600
 
 export default async function ProjectsPage() {
-    let projects = []
+    let projects: Project[] = []
     try {
         projects = await prisma.project.findMany({
             orderBy: { order: 'asc' },
