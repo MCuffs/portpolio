@@ -13,7 +13,7 @@ export const revalidate = 3600 // Revalidate every hour
 export const dynamic = 'force-dynamic' // allow query params like ?edit=1 to toggle edit UI
 
 export default async function Home({ searchParams }: { searchParams?: { edit?: string } }) {
-  const cookieStore = cookies()
+  const cookieStore = await cookies()
   const editCookie = cookieStore.get('edit')?.value === '1'
   const editMode = searchParams?.edit === '1' || editCookie
   let design = null
