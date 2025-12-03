@@ -152,7 +152,7 @@ export async function upsertProject(formData: FormData) {
 
 export async function setEditorMode(formData: FormData) {
     const enabled = formData.get('enabled') === 'on'
-    const cookieStore = cookies()
+    const cookieStore = await cookies()
 
     if (enabled) {
         cookieStore.set('edit', '1', { path: '/', httpOnly: false, sameSite: 'lax' })
