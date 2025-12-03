@@ -1,9 +1,10 @@
 import { prisma } from '@/lib/prisma'
 import Link from 'next/link'
 import { deleteProject } from '@/lib/actions'
+import type { Project } from '@prisma/client'
 
 export default async function AdminProjectsPage() {
-    let projects = []
+    let projects: Project[] = []
     try {
         projects = await prisma.project.findMany({
             orderBy: { order: 'asc' },
