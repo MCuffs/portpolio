@@ -10,6 +10,7 @@ export async function createProject(formData: FormData) {
     const description = formData.get('description') as string
     const content = formData.get('content') as string
     const tags = formData.get('tags') as string
+    const thumbnail = formData.get('thumbnail') as string
     const featured = formData.get('featured') === 'on'
     const order = parseInt(formData.get('order') as string) || 0
 
@@ -20,6 +21,7 @@ export async function createProject(formData: FormData) {
             description,
             content,
             tags,
+            thumbnail: thumbnail || null,
             featured,
             order,
         },
@@ -37,6 +39,7 @@ export async function updateProject(id: string, formData: FormData) {
     const description = formData.get('description') as string
     const content = formData.get('content') as string
     const tags = formData.get('tags') as string
+    const thumbnail = formData.get('thumbnail') as string
     const featured = formData.get('featured') === 'on'
     const order = parseInt(formData.get('order') as string) || 0
 
@@ -48,6 +51,7 @@ export async function updateProject(id: string, formData: FormData) {
             description,
             content,
             tags,
+            thumbnail: thumbnail || null,
             featured,
             order,
         },

@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server'
 import type { NextRequest } from 'next/server'
-import { decrypt } from '@/lib/auth'
+import { getSession } from '@/lib/auth'
 import { cookies } from 'next/headers'
 
 export async function middleware(request: NextRequest) {
@@ -8,14 +8,8 @@ export async function middleware(request: NextRequest) {
 
     // Protect /admin routes
     if (path.startsWith('/admin') && !path.startsWith('/admin/login')) {
-        const cookie = (await cookies()).get('session')?.value
-        if (!cookie) {
-            return NextResponse.redirect(new URL('/admin/login', request.url))
-        }
-
-        try {
-            await decrypt(cookie)
-        } catch (error) {
+        const session = await getSession()
+        if (!session) {
             return NextResponse.redirect(new URL('/admin/login', request.url))
         }
     }

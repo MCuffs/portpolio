@@ -1,0 +1,7 @@
+# Uploads directory for user-uploaded images
+*.jpg
+*.jpeg
+*.png
+*.gif
+*.webp
+*.svg

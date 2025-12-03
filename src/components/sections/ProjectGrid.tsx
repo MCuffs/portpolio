@@ -8,6 +8,7 @@ type Project = {
     title: string
     description: string
     tags: string
+    thumbnail?: string | null
 }
 
 export function ProjectGrid({ projects }: { projects: Project[] }) {
@@ -24,10 +25,17 @@ export function ProjectGrid({ projects }: { projects: Project[] }) {
                 {projects.map((project) => (
                     <Link key={project.id} href={`/projects/${project.slug}`} className="group block">
                         <div className="aspect-video bg-gray-100 rounded-lg mb-4 overflow-hidden border border-gray-100 transition-all group-hover:border-gray-300">
-                            {/* Placeholder for thumbnail */}
-                            <div className="w-full h-full bg-gray-50 flex items-center justify-center text-gray-300">
-                                Thumbnail
-                            </div>
+                            {project.thumbnail ? (
+                                <img
+                                    src={project.thumbnail}
+                                    alt={project.title}
+                                    className="w-full h-full object-cover"
+                                />
+                            ) : (
+                                <div className="w-full h-full bg-gray-50 flex items-center justify-center text-gray-300">
+                                    No image
+                                </div>
+                            )}
                         </div>
                         <h3 className="text-lg font-medium group-hover:underline decoration-1 underline-offset-4">
                             {project.title}
