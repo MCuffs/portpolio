@@ -2,7 +2,12 @@ import { HeroForm } from '@/components/admin/HeroForm'
 import { prisma } from '@/lib/prisma'
 
 export default async function AdminHeroPage() {
-    const hero = await prisma.hero.findFirst()
+    let hero = null
+    try {
+        hero = await prisma.hero.findFirst()
+    } catch (e) {
+        console.error('Failed to fetch hero:', e)
+    }
 
     return (
         <div className="p-8">

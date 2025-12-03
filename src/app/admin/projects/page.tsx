@@ -3,9 +3,14 @@ import Link from 'next/link'
 import { deleteProject } from '@/lib/actions'
 
 export default async function AdminProjectsPage() {
-    const projects = await prisma.project.findMany({
-        orderBy: { order: 'asc' },
-    })
+    let projects = []
+    try {
+        projects = await prisma.project.findMany({
+            orderBy: { order: 'asc' },
+        })
+    } catch (e) {
+        console.error('Failed to fetch projects:', e)
+    }
 
     return (
         <div className="p-8">

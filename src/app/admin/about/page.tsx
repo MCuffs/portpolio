@@ -2,7 +2,12 @@ import { AboutForm } from '@/components/admin/AboutForm'
 import { prisma } from '@/lib/prisma'
 
 export default async function AdminAboutPage() {
-    const about = await prisma.about.findFirst()
+    let about = null
+    try {
+        about = await prisma.about.findFirst()
+    } catch (e) {
+        console.error('Failed to fetch about:', e)
+    }
 
     return (
         <div className="p-8">

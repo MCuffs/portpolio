@@ -4,9 +4,14 @@ import { notFound } from 'next/navigation'
 
 export default async function EditProjectPage({ params }: { params: Promise<{ id: string }> }) {
     const { id } = await params
-    const project = await prisma.project.findUnique({
-        where: { id },
-    })
+    let project = null
+    try {
+        project = await prisma.project.findUnique({
+            where: { id },
+        })
+    } catch (e) {
+        console.error('Failed to fetch project:', e)
+    }
 
     if (!project) {
         notFound()
