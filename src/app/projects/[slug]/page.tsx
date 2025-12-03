@@ -1,3 +1,5 @@
+import type { Project } from '@prisma/client'
+
 import { prisma } from '@/lib/prisma'
 import { notFound } from 'next/navigation'
 import Link from 'next/link'
@@ -8,7 +10,7 @@ export const revalidate = 3600
 export default async function ProjectDetailPage({ params }: { params: Promise<{ slug: string }> }) {
     const { slug } = await params
 
-    const fallbackProjects = [
+    const fallbackProjects: Project[] = [
         {
             id: '1',
             slug: 'market-expansion',
@@ -17,6 +19,10 @@ export default async function ProjectDetailPage({ params }: { params: Promise<{ 
             tags: 'Strategy, Data, Growth',
             content: '<h2>Overview</h2><p>Placeholder project content when database is empty.</p>',
             thumbnail: null,
+            featured: true,
+            order: 1,
+            createdAt: new Date(),
+            updatedAt: new Date(),
         },
         {
             id: '2',
@@ -26,6 +32,10 @@ export default async function ProjectDetailPage({ params }: { params: Promise<{ 
             tags: 'AI, Python, Marketing',
             content: '<h2>Overview</h2><p>Placeholder project content when database is empty.</p>',
             thumbnail: null,
+            featured: true,
+            order: 2,
+            createdAt: new Date(),
+            updatedAt: new Date(),
         },
         {
             id: '3',
@@ -35,10 +45,14 @@ export default async function ProjectDetailPage({ params }: { params: Promise<{ 
             tags: 'Product, Pricing, SaaS',
             content: '<h2>Overview</h2><p>Placeholder project content when database is empty.</p>',
             thumbnail: null,
+            featured: false,
+            order: 3,
+            createdAt: new Date(),
+            updatedAt: new Date(),
         },
     ]
 
-    let project = fallbackProjects.find((p) => p.slug === slug) || null
+    let project: Project | null = fallbackProjects.find((p) => p.slug === slug) || null
     try {
         const dbProject = await prisma.project.findUnique({
             where: { slug },
