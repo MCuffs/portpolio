@@ -1,8 +1,9 @@
 import { setEditorMode } from '@/lib/actions'
 import { cookies } from 'next/headers'
 
-export default function AdminEditorPage() {
-    const editCookie = cookies().get('edit')?.value === '1'
+export default async function AdminEditorPage() {
+    const cookieStore = await cookies()
+    const editCookie = cookieStore.get('edit')?.value === '1'
 
     return (
         <div className="p-8 max-w-3xl space-y-6">
