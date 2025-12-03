@@ -1,36 +1,76 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Minimal Portfolio Website
+
+A professional, data-driven strategist portfolio built with Next.js 14, TypeScript, Tailwind CSS, and Prisma (SQLite).
+
+## Features
+
+- **Minimalist Design**: Clean, typography-focused aesthetic (Linear/Vercel style).
+- **Admin Dashboard**: Secure `/admin` area to manage projects, about content, and hero text.
+- **Dynamic Content**: All content is stored in a SQLite database (easily swappable to Postgres/Supabase).
+- **Responsive**: Fully responsive design for all devices.
+- **SEO Optimized**: Built with Next.js App Router and semantic HTML.
+
+## Tech Stack
+
+- **Framework**: Next.js 14 (App Router)
+- **Language**: TypeScript
+- **Styling**: Tailwind CSS v4
+- **Database**: SQLite (Prisma ORM)
+- **Auth**: Custom Session/JWT (Jose)
+- **Icons**: Lucide React
 
 ## Getting Started
 
-First, run the development server:
+1. **Install Dependencies**
+   ```bash
+   npm install
+   ```
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+2. **Setup Database**
+   ```bash
+   # Create database tables
+   npx prisma migrate dev --name init
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+   # Seed database (Optional, if script works in your env)
+   # npx tsx prisma/seed.ts
+   ```
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+3. **Run Development Server**
+   ```bash
+   npm run dev
+   ```
+   Open [http://localhost:3000](http://localhost:3000) to view the site.
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+4. **Access Admin Panel**
+   - Go to [http://localhost:3000/admin/login](http://localhost:3000/admin/login)
+   - Default Credentials (if seeded): `admin@example.com` / `admin123`
+   - If not seeded, check `app/api/auth/login/route.ts` for hardcoded fallback or create a user manually.
 
-## Learn More
+## Deployment (Vercel)
 
-To learn more about Next.js, take a look at the following resources:
+1. **Database**: For Vercel, you cannot use SQLite (file-based). You must switch to a provider like **Supabase** or **Vercel Postgres**.
+   - Update `prisma/schema.prisma`:
+     ```prisma
+     datasource db {
+       provider = "postgresql"
+       url      = env("DATABASE_URL")
+     }
+     ```
+   - Update `.env` with your Postgres connection string.
+   - Run `npx prisma migrate deploy` to push schema to production DB.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+2. **Environment Variables**:
+   - `DATABASE_URL`: Your database connection string.
+   - `NEXT_PUBLIC_...`: Any public env vars.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+3. **Deploy**:
+   - Push to GitHub.
+   - Import project in Vercel.
+   - Vercel will automatically detect Next.js and build.
 
-## Deploy on Vercel
+## Project Structure
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+- `src/app`: App Router pages and API routes.
+- `src/components`: Reusable UI components.
+- `src/lib`: Utilities, Prisma client, Auth helpers.
+- `prisma`: Database schema and migrations.
