@@ -148,3 +148,79 @@ export async function upsertProject(formData: FormData) {
     revalidatePath('/admin/projects')
     redirect('/admin/projects')
 }
+
+export async function saveHeroFields({ headline, subtext }: { headline: string; subtext: string }) {
+    const existing = await prisma.hero.findFirst()
+    if (existing) {
+        await prisma.hero.update({
+            where: { id: existing.id },
+            data: { headline, subtext },
+        })
+    } else {
+        await prisma.hero.create({ data: { headline, subtext } })
+    }
+
+    revalidatePath('/')
+    revalidatePath('/admin/hero')
+}
+
+export async function saveAboutFields({
+    bio,
+    philosophy,
+    experience,
+}: {
+    bio: string
+    philosophy?: string
+    experience?: string
+}) {
+    const existing = await prisma.about.findFirst()
+    if (existing) {
+        await prisma.about.update({
+            where: { id: existing.id },
+            data: { bio, philosophy: philosophy || null, experience: experience || '[]' },
+        })
+    } else {
+        await prisma.about.create({
+            data: { bio, philosophy: philosophy || null, experience: experience || '[]' },
+        })
+    }
+
+    revalidatePath('/')
+    revalidatePath('/about')
+    revalidatePath('/admin/about')
+}
+
+export async function saveDesignBackground(formData: FormData) {
+    const section = formData.get('section') as 'hero' | 'about' | 'projects'
+    const image = (formData.get('image') as string | null) || null
+    const enabled = formData.get('enabled') === 'true' || formData.get('enabled') === 'on'
+
+    const existing = await prisma.designSetting.findFirst()
+
+    const data: Record<string, any> = {}
+    if (section === 'hero') {
+        data.heroBackgroundImage = image
+        data.heroBackgroundEnabled = enabled
+    } else if (section === 'about') {
+        data.aboutBackgroundImage = image
+        data.aboutBackgroundEnabled = enabled
+    } else if (section === 'projects') {
+        data.projectsBackgroundImage = image
+        data.projectsBackgroundEnabled = enabled
+    }
+
+    if (existing) {
+        await prisma.designSetting.update({
+            where: { id: existing.id },
+            data,
+        })
+    } else {
+        await prisma.designSetting.create({
+            data,
+        })
+    }
+
+    revalidatePath('/')
+    revalidatePath('/projects')
+    revalidatePath('/admin/design')
+}

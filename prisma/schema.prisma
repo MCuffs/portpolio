@@ -63,8 +63,10 @@ model DesignSetting {
   id                       String   @id @default(uuid())
   heroBackgroundImage      String?
   projectsBackgroundImage  String?
+  aboutBackgroundImage     String?
   heroBackgroundEnabled    Boolean  @default(false)
   projectsBackgroundEnabled Boolean @default(false)
+  aboutBackgroundEnabled   Boolean  @default(false)
   createdAt                DateTime @default(now())
   updatedAt                DateTime @updatedAt
 }
