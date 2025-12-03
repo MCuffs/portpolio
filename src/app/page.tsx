@@ -67,21 +67,25 @@ export default async function Home() {
   }
 
   return (
-    <div className="relative min-h-screen overflow-hidden">
-      <Image
-        src="/hero-bg.jpg"
-        alt="Night bridge scene"
-        fill
-        priority
-        sizes="100vw"
-        className="absolute inset-0 h-full w-full object-cover"
-      />
-      <div className="absolute inset-0 bg-gradient-to-b from-slate-950/80 via-slate-950/60 to-slate-950/85" />
-
-      <div className="relative flex flex-col min-h-screen">
+    <div className="flex flex-col min-h-screen">
+      <div className="relative overflow-hidden">
         <Hero />
-        <ProjectGrid projects={projects} />
       </div>
+
+      <section className="relative overflow-hidden">
+        <Image
+          src="/hero-bg.jpg"
+          alt="Night bridge scene"
+          fill
+          priority
+          sizes="100vw"
+          className="absolute inset-0 h-full w-full object-cover"
+        />
+        <div className="absolute inset-0 bg-gradient-to-b from-slate-950/85 via-slate-950/70 to-slate-950/85" />
+        <div className="relative">
+          <ProjectGrid projects={projects} />
+        </div>
+      </section>
     </div>
   )
 }
