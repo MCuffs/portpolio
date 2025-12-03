@@ -1,7 +1,9 @@
 'use client'
 
-import { createProject, updateProject } from '@/lib/actions'
 import { useState } from 'react'
+import { useFormStatus } from 'react-dom'
+
+import { upsertProject } from '@/lib/actions'
 import { RichTextEditor } from './RichTextEditor'
 
 type Project = {
@@ -16,32 +18,23 @@ type Project = {
     order: number
 }
 
+function SubmitButton({ disabled }: { disabled?: boolean }) {
+    const { pending } = useFormStatus()
+    return (
+        <button
+            type="submit"
+            disabled={pending || disabled}
+            className="bg-black text-white px-4 py-2 rounded hover:bg-gray-800 disabled:opacity-50"
+        >
+            {pending ? 'Saving...' : 'Save Project'}
+        </button>
+    )
+}
+
 export function ProjectForm({ project }: { project?: Project }) {
-    const [isPending, setIsPending] = useState(false)
     const [thumbnailUrl, setThumbnailUrl] = useState(project?.thumbnail || '')
     const [isUploading, setIsUploading] = useState(false)
     const [content, setContent] = useState(project?.content || '')
-
-    const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-        e.preventDefault()
-        setIsPending(true)
-
-        try {
-            const formData = new FormData(e.currentTarget)
-            // Set the thumbnail URL and content in formData
-            formData.set('thumbnail', thumbnailUrl)
-            formData.set('content', content)
-
-            if (project) {
-                await updateProject(project.id, formData)
-            } else {
-                await createProject(formData)
-            }
-        } catch (error) {
-            console.error(error)
-            setIsPending(false)
-        }
-    }
 
     const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0]
@@ -72,7 +65,12 @@ export function ProjectForm({ project }: { project?: Project }) {
     }
 
     return (
-        <form onSubmit={handleSubmit} className="space-y-6 max-w-4xl bg-white p-6 rounded-lg shadow">
+        <form action={upsertProject} className="space-y-6 max-w-4xl bg-white p-6 rounded-lg shadow">
+            <input type="hidden" name="thumbnail" value={thumbnailUrl} readOnly />
+            <input type="hidden" name="content" value={content} readOnly />
+
+            {project?.id && <input type="hidden" name="id" value={project.id} readOnly />}
+
             <div>
                 <label htmlFor="title" className="block text-sm font-medium text-gray-700">
                     Title
@@ -212,13 +210,7 @@ export function ProjectForm({ project }: { project?: Project }) {
             </div>
 
             <div className="flex justify-end">
-                <button
-                    type="submit"
-                    disabled={isPending || isUploading}
-                    className="bg-black text-white px-4 py-2 rounded hover:bg-gray-800 disabled:opacity-50"
-                >
-                    {isPending ? 'Saving...' : 'Save Project'}
-                </button>
+                <SubmitButton disabled={isUploading} />
             </div>
         </form>
     )

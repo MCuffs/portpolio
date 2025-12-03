@@ -5,63 +5,12 @@ import { revalidatePath } from 'next/cache'
 import { redirect } from 'next/navigation'
 
 export async function createProject(formData: FormData) {
-    const title = formData.get('title') as string
-    const slug = formData.get('slug') as string
-    const description = formData.get('description') as string
-    const content = formData.get('content') as string
-    const tags = formData.get('tags') as string
-    const thumbnail = formData.get('thumbnail') as string
-    const featured = formData.get('featured') === 'on'
-    const order = parseInt(formData.get('order') as string) || 0
-
-    await prisma.project.create({
-        data: {
-            title,
-            slug,
-            description,
-            content,
-            tags,
-            thumbnail: thumbnail || null,
-            featured,
-            order,
-        },
-    })
-
-    revalidatePath('/projects')
-    revalidatePath('/')
-    revalidatePath('/admin/projects')
-    redirect('/admin/projects')
+    return upsertProject(formData)
 }
 
 export async function updateProject(id: string, formData: FormData) {
-    const title = formData.get('title') as string
-    const slug = formData.get('slug') as string
-    const description = formData.get('description') as string
-    const content = formData.get('content') as string
-    const tags = formData.get('tags') as string
-    const thumbnail = formData.get('thumbnail') as string
-    const featured = formData.get('featured') === 'on'
-    const order = parseInt(formData.get('order') as string) || 0
-
-    await prisma.project.update({
-        where: { id },
-        data: {
-            title,
-            slug,
-            description,
-            content,
-            tags,
-            thumbnail: thumbnail || null,
-            featured,
-            order,
-        },
-    })
-
-    revalidatePath('/projects')
-    revalidatePath('/')
-    revalidatePath(`/projects/${slug}`)
-    revalidatePath('/admin/projects')
-    redirect('/admin/projects')
+    formData.set('id', id)
+    return upsertProject(formData)
 }
 
 export async function deleteProject(id: string) {
@@ -151,4 +100,51 @@ export async function updateDesignSettings(formData: FormData) {
     revalidatePath('/projects')
     revalidatePath('/admin/design')
     redirect('/admin/design')
+}
+
+export async function upsertProject(formData: FormData) {
+    const id = (formData.get('id') as string | null) || null
+    const title = formData.get('title') as string
+    const slug = formData.get('slug') as string
+    const description = formData.get('description') as string
+    const content = formData.get('content') as string
+    const tags = formData.get('tags') as string
+    const thumbnail = formData.get('thumbnail') as string
+    const featured = formData.get('featured') === 'on'
+    const order = parseInt(formData.get('order') as string) || 0
+
+    if (id) {
+        await prisma.project.update({
+            where: { id },
+            data: {
+                title,
+                slug,
+                description,
+                content,
+                tags,
+                thumbnail: thumbnail || null,
+                featured,
+                order,
+            },
+        })
+    } else {
+        await prisma.project.create({
+            data: {
+                title,
+                slug,
+                description,
+                content,
+                tags,
+                thumbnail: thumbnail || null,
+                featured,
+                order,
+            },
+        })
+    }
+
+    revalidatePath('/projects')
+    revalidatePath('/')
+    revalidatePath(`/projects/${slug}`)
+    revalidatePath('/admin/projects')
+    redirect('/admin/projects')
 }
