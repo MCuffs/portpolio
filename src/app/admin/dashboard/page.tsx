@@ -38,6 +38,12 @@ export default function DashboardPage() {
                         <p className="text-gray-500">Update home page hero text.</p>
                     </Link>
                 </div>
+                <div className="p-6 bg-white rounded-lg shadow border hover:shadow-md transition-shadow">
+                    <Link href="/admin/design" className="block h-full">
+                        <h2 className="text-xl font-semibold mb-2">Design</h2>
+                        <p className="text-gray-500">Toggle background imagery and assets.</p>
+                    </Link>
+                </div>
             </div>
         </div>
     )

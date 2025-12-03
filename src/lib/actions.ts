@@ -117,3 +117,38 @@ export async function updateHero(formData: FormData) {
     revalidatePath('/admin/hero')
     redirect('/admin/dashboard')
 }
+
+export async function updateDesignSettings(formData: FormData) {
+    const heroBackgroundEnabled = formData.get('heroBackgroundEnabled') === 'on'
+    const projectsBackgroundEnabled = formData.get('projectsBackgroundEnabled') === 'on'
+    const heroBackgroundImage = ((formData.get('heroBackgroundImage') as string) || '').trim()
+    const projectsBackgroundImage = ((formData.get('projectsBackgroundImage') as string) || '').trim()
+
+    const existing = await prisma.designSetting.findFirst()
+
+    if (existing) {
+        await prisma.designSetting.update({
+            where: { id: existing.id },
+            data: {
+                heroBackgroundEnabled,
+                projectsBackgroundEnabled,
+                heroBackgroundImage: heroBackgroundImage || null,
+                projectsBackgroundImage: projectsBackgroundImage || null,
+            },
+        })
+    } else {
+        await prisma.designSetting.create({
+            data: {
+                heroBackgroundEnabled,
+                projectsBackgroundEnabled,
+                heroBackgroundImage: heroBackgroundImage || null,
+                projectsBackgroundImage: projectsBackgroundImage || null,
+            },
+        })
+    }
+
+    revalidatePath('/')
+    revalidatePath('/projects')
+    revalidatePath('/admin/design')
+    redirect('/admin/design')
+}

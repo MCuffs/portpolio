@@ -9,6 +9,15 @@ import { prisma } from '@/lib/prisma'
 export const revalidate = 3600 // Revalidate every hour
 
 export default async function Home() {
+  const design = await prisma.designSetting.findFirst()
+
+  const heroBackgroundEnabled = Boolean(design?.heroBackgroundEnabled && (design.heroBackgroundImage || '/hero-bg.jpg'))
+  const heroBackgroundImage = design?.heroBackgroundImage || '/hero-bg.jpg'
+  const projectsBackgroundEnabled = Boolean(
+    design?.projectsBackgroundEnabled && (design.projectsBackgroundImage || '/hero-bg.jpg')
+  )
+  const projectsBackgroundImage = design?.projectsBackgroundImage || '/hero-bg.jpg'
+
   // Fetch featured projects
   let projects: Project[] = []
   try {
@@ -67,23 +76,42 @@ export default async function Home() {
   }
 
   return (
-    <div className="flex flex-col min-h-screen">
-      <div className="relative overflow-hidden">
-        <Hero />
-      </div>
-
-      <section className="relative overflow-hidden">
-        <Image
-          src="/hero-bg.jpg"
-          alt="Night bridge scene"
-          fill
-          priority
-          sizes="100vw"
-          className="absolute inset-0 h-full w-full object-cover"
-        />
-        <div className="absolute inset-0 bg-gradient-to-b from-slate-950/85 via-slate-950/70 to-slate-950/85" />
+    <div className="flex flex-col min-h-screen bg-white text-black">
+      <section className={`relative overflow-hidden ${heroBackgroundEnabled ? '' : 'bg-white'}`}>
+        {heroBackgroundEnabled && (
+          <>
+            <Image
+              src={heroBackgroundImage}
+              alt="Hero background"
+              fill
+              priority
+              sizes="100vw"
+              className="absolute inset-0 h-full w-full object-cover"
+            />
+            <div className="absolute inset-0 bg-gradient-to-b from-slate-950/80 via-slate-950/60 to-slate-950/80" />
+          </>
+        )}
         <div className="relative">
-          <ProjectGrid projects={projects} />
+          <Hero onDark={heroBackgroundEnabled} />
+        </div>
+      </section>
+
+      <section className={`relative overflow-hidden ${projectsBackgroundEnabled ? '' : 'bg-white'}`}>
+        {projectsBackgroundEnabled && (
+          <>
+            <Image
+              src={projectsBackgroundImage}
+              alt="Projects background"
+              fill
+              priority
+              sizes="100vw"
+              className="absolute inset-0 h-full w-full object-cover"
+            />
+            <div className="absolute inset-0 bg-gradient-to-b from-slate-950/85 via-slate-950/70 to-slate-950/85" />
+          </>
+        )}
+        <div className="relative">
+          <ProjectGrid projects={projects} onDark={projectsBackgroundEnabled} />
         </div>
       </section>
     </div>
