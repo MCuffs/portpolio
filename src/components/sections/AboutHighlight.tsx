@@ -1,3 +1,5 @@
+'use client'
+
 import Link from 'next/link'
 import { useEffect, useState } from 'react'
 
@@ -92,4 +94,3 @@ export function AboutHighlight({ bio, philosophy, experience, editable = false }
         </section>
     )
 }
-`'use client'`
