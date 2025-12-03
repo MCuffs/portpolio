@@ -1,5 +1,7 @@
 import type { Project } from '@prisma/client'
 
+import Image from 'next/image'
+
 import { Hero } from '@/components/sections/Hero'
 import { ProjectGrid } from '@/components/sections/ProjectGrid'
 import { prisma } from '@/lib/prisma'
@@ -65,9 +67,21 @@ export default async function Home() {
   }
 
   return (
-    <div className="flex flex-col min-h-screen">
-      <Hero />
-      <ProjectGrid projects={projects} />
+    <div className="relative min-h-screen overflow-hidden">
+      <Image
+        src="/hero-bg.jpg"
+        alt="Night bridge scene"
+        fill
+        priority
+        sizes="100vw"
+        className="absolute inset-0 h-full w-full object-cover"
+      />
+      <div className="absolute inset-0 bg-gradient-to-b from-slate-950/80 via-slate-950/60 to-slate-950/85" />
+
+      <div className="relative flex flex-col min-h-screen">
+        <Hero />
+        <ProjectGrid projects={projects} />
+      </div>
     </div>
   )
 }
