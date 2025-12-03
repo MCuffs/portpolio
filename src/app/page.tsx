@@ -1,3 +1,5 @@
+import type { Project } from '@prisma/client'
+
 import { Hero } from '@/components/sections/Hero'
 import { ProjectGrid } from '@/components/sections/ProjectGrid'
 import { prisma } from '@/lib/prisma'
@@ -6,7 +8,7 @@ export const revalidate = 3600 // Revalidate every hour
 
 export default async function Home() {
   // Fetch featured projects
-  let projects = []
+  let projects: Project[] = []
   try {
     projects = await prisma.project.findMany({
       where: { featured: true },
