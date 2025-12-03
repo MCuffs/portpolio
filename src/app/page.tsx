@@ -3,6 +3,7 @@ import type { Project } from '@prisma/client'
 import Image from 'next/image'
 
 import { Hero } from '@/components/sections/Hero'
+import { AboutHighlight } from '@/components/sections/AboutHighlight'
 import { ProjectGrid } from '@/components/sections/ProjectGrid'
 import { prisma } from '@/lib/prisma'
 
@@ -22,6 +23,14 @@ export default async function Home() {
     design?.projectsBackgroundEnabled && (design.projectsBackgroundImage || '/hero-bg.jpg')
   )
   const projectsBackgroundImage = design?.projectsBackgroundImage || '/hero-bg.jpg'
+
+  // Fetch about
+  let about = null
+  try {
+    about = await prisma.about.findFirst()
+  } catch (e) {
+    console.error('Failed to fetch about:', e)
+  }
 
   // Fetch featured projects
   let projects: Project[] = []
@@ -80,6 +89,28 @@ export default async function Home() {
     ]
   }
 
+  // About fallback
+  const bio =
+    about?.bio ||
+    'Data strategist with a background in product and analytics, translating complex data into clear decisions.'
+  const philosophy =
+    about?.philosophy || 'Simplicity is the ultimate sophistication. Clarity beats noise every time.'
+  let experience: { year: string; role: string; company: string }[] = []
+  if (about?.experience) {
+    try {
+      experience = JSON.parse(about.experience)
+    } catch (e) {
+      console.error('Failed to parse experience JSON', e)
+    }
+  }
+  if (experience.length === 0) {
+    experience = [
+      { year: '2023 — Present', role: 'Senior Strategist', company: 'Tech Corp' },
+      { year: '2021 — 2023', role: 'Product Manager', company: 'Startup Inc' },
+      { year: '2019 — 2021', role: 'Data Analyst', company: 'Data Solutions' },
+    ]
+  }
+
   return (
     <div className="flex flex-col min-h-screen bg-white text-black">
       <section className={`relative overflow-hidden ${heroBackgroundEnabled ? '' : 'bg-white'}`}>
@@ -100,6 +131,8 @@ export default async function Home() {
           <Hero onDark={heroBackgroundEnabled} />
         </div>
       </section>
+
+      <AboutHighlight bio={bio} philosophy={philosophy} experience={experience} />
 
       <section className={`relative overflow-hidden ${projectsBackgroundEnabled ? '' : 'bg-white'}`}>
         {projectsBackgroundEnabled && (
