@@ -1,6 +1,7 @@
 import type { Project } from '@prisma/client'
 
 import Image from 'next/image'
+import { cookies } from 'next/headers'
 
 import { Hero } from '@/components/sections/Hero'
 import { AboutHighlight } from '@/components/sections/AboutHighlight'
@@ -12,7 +13,9 @@ export const revalidate = 3600 // Revalidate every hour
 export const dynamic = 'force-dynamic' // allow query params like ?edit=1 to toggle edit UI
 
 export default async function Home({ searchParams }: { searchParams?: { edit?: string } }) {
-  const editMode = searchParams?.edit === '1'
+  const cookieStore = cookies()
+  const editCookie = cookieStore.get('edit')?.value === '1'
+  const editMode = searchParams?.edit === '1' || editCookie
   let design = null
   try {
     design = await prisma.designSetting.findFirst()

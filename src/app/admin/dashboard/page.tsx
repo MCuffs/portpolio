@@ -44,6 +44,12 @@ export default function DashboardPage() {
                         <p className="text-gray-500">Toggle background imagery and assets.</p>
                     </Link>
                 </div>
+                <div className="p-6 bg-white rounded-lg shadow border hover:shadow-md transition-shadow">
+                    <Link href="/admin/editor" className="block h-full">
+                        <h2 className="text-xl font-semibold mb-2">Editor Mode</h2>
+                        <p className="text-gray-500">Enable site-wide visual editor without query params.</p>
+                    </Link>
+                </div>
             </div>
         </div>
     )

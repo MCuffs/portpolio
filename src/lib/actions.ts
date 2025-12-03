@@ -3,6 +3,7 @@
 import { prisma } from '@/lib/prisma'
 import { revalidatePath } from 'next/cache'
 import { redirect } from 'next/navigation'
+import { cookies } from 'next/headers'
 
 export async function createProject(formData: FormData) {
     return upsertProject(formData)
@@ -147,6 +148,18 @@ export async function upsertProject(formData: FormData) {
     revalidatePath(`/projects/${slug}`)
     revalidatePath('/admin/projects')
     redirect('/admin/projects')
+}
+
+export async function setEditorMode(formData: FormData) {
+    const enabled = formData.get('enabled') === 'on'
+    const cookieStore = cookies()
+
+    if (enabled) {
+        cookieStore.set('edit', '1', { path: '/', httpOnly: false, sameSite: 'lax' })
+    } else {
+        cookieStore.set('edit', '0', { path: '/', httpOnly: false, maxAge: -1, sameSite: 'lax' })
+    }
+    revalidatePath('/')
 }
 
 export async function saveHeroFields({ headline, subtext }: { headline: string; subtext: string }) {
